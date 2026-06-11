@@ -13,7 +13,7 @@ const PRACTICE_OPTIONS = [
 const CONTACT_ITEMS = [
   { Icon: MapPinIcon, label: "Office Address", value: "Tripureshwor, Kathmandu 44600, Nepal" },
   { Icon: PhoneIcon,  label: "Phone",          value: "+977 9700227418" },
-  { Icon: MailIcon,   label: "Email",           value: "janakidigitalsolutions@gmail.com" },
+  { Icon: MailIcon,   label: "Email",           value: "dsacorporatesolutions@gmail.com" },
 ];
 
 const INITIAL_FORM = {
