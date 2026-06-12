@@ -12,17 +12,6 @@ const btnPrimary = { background:"var(--gold)", color:"var(--navy)", border:"none
 const btnOutline = { background:"transparent", color:"var(--gold)", border:"1px solid rgba(201,168,76,0.4)", padding:"8px 18px", fontFamily:"var(--font-ui)", fontSize:"11px", cursor:"pointer" };
 const btnDanger = { background:"transparent", color:"#ff6b6b", border:"1px solid rgba(220,53,69,0.3)", padding:"8px 16px", fontFamily:"var(--font-ui)", fontSize:"11px", cursor:"pointer" };
 
-function ScaleIcon({ size = 24, color = "var(--gold)" }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3v18" />
-      <path d="M8 7H4l4 8H4" />
-      <path d="M16 7h4l-4 8h4" />
-      <path d="M5 21h14" />
-    </svg>
-  );
-}
-
 export default function PracticeAreasTab() {
   const [areas, setAreas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +23,9 @@ export default function PracticeAreasTab() {
 
   const fetchAll = async () => {
     setLoading(true);
-    const res = await fetch(`${API_URL}/api/admin/practice-areas`, { headers: { Authorization: `Bearer ${token()}` } });
+    const res = await fetch(`${API_URL}/api/admin/practice-areas`, {
+      headers: { Authorization: `Bearer ${token()}` }
+    });
     const data = await res.json();
     setAreas(data.data || []);
     setLoading(false);
@@ -109,9 +100,7 @@ export default function PracticeAreasTab() {
         <div style={{ textAlign:"center", padding:"40px", color:"var(--text-muted)", fontSize:"13px" }}>Loading...</div>
       ) : areas.length === 0 ? (
         <div style={{ ...cardStyle, textAlign:"center", padding:"48px" }}>
-          <div style={{ display:"flex", justifyContent:"center", marginBottom:"12px" }}>
-            <ScaleIcon size={40} color="rgba(201,168,76,0.4)" />
-          </div>
+          <div style={{ fontSize:"32px", marginBottom:"12px" }}>⚖️</div>
           <div style={{ fontSize:"14px", color:"var(--text-muted)" }}>No practice areas yet. Click "Add Practice Area" to get started.</div>
         </div>
       ) : (
