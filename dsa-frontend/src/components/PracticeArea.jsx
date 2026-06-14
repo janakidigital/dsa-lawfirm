@@ -1,139 +1,106 @@
-import { useState, useEffect } from "react";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const token = () => localStorage.getItem("dsa_admin_token");
-
-const EMPTY = { num:"", name:"", desc:"", icon:"scale", order:0, active:true };
-const cardStyle = { background:"rgba(27,58,107,0.08)", border:"1px solid rgba(201,168,76,0.12)", padding:"24px", marginBottom:"12px" };
-const inputStyle = { background:"rgba(255,255,255,0.03)", border:"1px solid rgba(201,168,76,0.2)", color:"var(--cream)", padding:"10px 14px", fontFamily:"var(--font-ui)", fontSize:"13px", outline:"none", width:"100%", boxSizing:"border-box" };
-const textareaStyle = { ...inputStyle, resize:"vertical", minHeight:"80px" };
-const labelStyle = { fontSize:"10px", letterSpacing:"2px", textTransform:"uppercase", color:"var(--gold)", display:"block", marginBottom:"5px" };
-const btnPrimary = { background:"var(--gold)", color:"var(--navy)", border:"none", padding:"10px 22px", fontFamily:"var(--font-ui)", fontSize:"11px", letterSpacing:"2px", textTransform:"uppercase", cursor:"pointer", fontWeight:"600" };
-const btnOutline = { background:"transparent", color:"var(--gold)", border:"1px solid rgba(201,168,76,0.4)", padding:"8px 18px", fontFamily:"var(--font-ui)", fontSize:"11px", cursor:"pointer" };
-const btnDanger = { background:"transparent", color:"#ff6b6b", border:"1px solid rgba(220,53,69,0.3)", padding:"8px 16px", fontFamily:"var(--font-ui)", fontSize:"11px", cursor:"pointer" };
-
-function ScaleIcon({ size = 24, color = "var(--gold)" }) {
+function BuildingIcon() {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3v18" />
-      <path d="M8 7H4l4 8H4" />
-      <path d="M16 7h4l-4 8h4" />
-      <path d="M5 21h14" />
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 21h18" />
+      <path d="M5 21V7l7-4 7 4v14" />
+      <path d="M9 21v-4h6v4" />
+      <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01" />
     </svg>
   );
 }
 
-export default function PracticeAreasTab() {
-  const [areas, setAreas] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editItem, setEditItem] = useState(null);
-  const [form, setForm] = useState(EMPTY);
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
+function HandshakeIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z" />
+      <path d="M12 5.36 8.87 8.5a2.13 2.13 0 0 0 0 3h0a2.13 2.13 0 0 0 3.02 0L12 11l.11-.5a2.13 2.13 0 0 0 3.02 0h0a2.13 2.13 0 0 0 0-3z" />
+    </svg>
+  );
+}
 
-  const fetchAll = async () => {
-    setLoading(true);
-    const res = await fetch(`${API_URL}/api/admin/practice-areas`, { headers: { Authorization: `Bearer ${token()}` } });
-    const data = await res.json();
-    setAreas(data.data || []);
-    setLoading(false);
-  };
+function LightbulbIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" />
+      <path d="M10 22h4" />
+    </svg>
+  );
+}
 
-  useEffect(() => { fetchAll(); }, []);
+function ClipboardIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="8" y="2" width="8" height="4" rx="1" />
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <path d="M12 11h4M12 16h4M8 11h.01M8 16h.01" />
+    </svg>
+  );
+}
 
-  const openAdd = () => { setForm(EMPTY); setEditItem(null); setShowForm(true); setMsg(""); };
-  const openEdit = (item) => { setForm({ num:item.num, name:item.name, desc:item.desc, icon:item.icon, order:item.order, active:item.active }); setEditItem(item._id); setShowForm(true); setMsg(""); };
+function GavelIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m14 13-8.5 8.5a2.12 2.12 0 0 1-3-3L11 10" />
+      <path d="m16 16 6-6" />
+      <path d="m8 8 6-6" />
+      <path d="m9 7 8 8" />
+      <path d="m21 11-8-8" />
+    </svg>
+  );
+}
 
-  const handleSave = async (e) => {
+function UsersIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+const PRACTICES = [
+  { num: "01", Icon: BuildingIcon,  name: "Corporate Law",           desc: "Full-spectrum corporate legal services — governance, structure, bylaws, shareholder agreements, and board advisory." },
+  { num: "02", Icon: HandshakeIcon, name: "Mergers & Acquisitions",  desc: "Expert M&A counsel from due diligence and deal structuring through negotiation, documentation, and seamless closing." },
+  { num: "03", Icon: LightbulbIcon, name: "Intellectual Property",   desc: "Protect your innovations — trademark registration, patent filings, copyright enforcement, and IP litigation support." },
+  { num: "04", Icon: ClipboardIcon, name: "Compliance & Regulatory", desc: "Navigating complex regulatory frameworks — securities law, financial compliance, and government regulatory affairs." },
+  { num: "05", Icon: GavelIcon,     name: "Corporate Litigation",    desc: "Aggressive, strategic courtroom representation for commercial disputes, contract breaches, and corporate conflicts." },
+  { num: "06", Icon: UsersIcon,     name: "Employment Law",          desc: "HR compliance, employment contracts, workplace investigations, and executive compensation structuring." },
+];
+
+export default function PracticeArea() {
+  const handleClick = (e) => {
     e.preventDefault();
-    setSaving(true);
-    const url = editItem ? `${API_URL}/api/admin/practice-areas/${editItem}` : `${API_URL}/api/admin/practice-areas`;
-    const method = editItem ? "PUT" : "POST";
-    const res = await fetch(url, { method, headers:{ "Content-Type":"application/json", Authorization:`Bearer ${token()}` }, body:JSON.stringify(form) });
-    const data = await res.json();
-    setSaving(false);
-    if (res.ok) { setMsg("✓ Saved!"); fetchAll(); setTimeout(() => { setShowForm(false); setMsg(""); }, 1200); }
-    else setMsg("⚠️ " + data.message);
-  };
-
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`Delete "${name}"?`)) return;
-    await fetch(`${API_URL}/api/admin/practice-areas/${id}`, { method:"DELETE", headers:{ Authorization:`Bearer ${token()}` } });
-    fetchAll();
+    document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <div>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"24px" }}>
-        <div>
-          <h2 style={{ fontFamily:"var(--font-display)", fontSize:"20px", color:"var(--white)", margin:0 }}>Practice Areas</h2>
-          <p style={{ fontSize:"12px", color:"var(--text-muted)", margin:"4px 0 0" }}>{areas.length} practice areas</p>
+    <section id="practice">
+      <div className="section-inner">
+        <div className="practice-header">
+          <div className="section-label reveal">What We Do</div>
+          <h2 className="section-title reveal reveal-delay-1">
+            Our <span className="gold">Practice</span> <span className="italic">Areas</span>
+          </h2>
+          <p className="reveal reveal-delay-2" style={{ fontFamily: "var(--font-ui)", fontSize: "15px", color: "var(--text-muted)", maxWidth: "500px", margin: "0 auto", lineHeight: "1.7" }}>
+            Comprehensive legal solutions across all facets of corporate law, tailored to your business needs.
+          </p>
         </div>
-        <button style={btnPrimary} onClick={openAdd}>+ Add Practice Area</button>
+
+        <div className="practice-grid">
+          {PRACTICES.map(({ num, Icon, name, desc }, i) => (
+            <div className={`practice-card reveal${i > 0 ? ` reveal-delay-${Math.min(i, 4)}` : ""}`} key={num}>
+              <div className="practice-num">{num}</div>
+              <div className="practice-icon"><Icon /></div>
+              <div className="practice-name">{name}</div>
+              <div className="practice-desc">{desc}</div>
+              <a href="#contact" className="practice-link" onClick={handleClick}>Learn More →</a>
+            </div>
+          ))}
+        </div>
       </div>
-
-      {showForm && (
-        <div style={{ ...cardStyle, border:"1px solid rgba(201,168,76,0.35)", marginBottom:"28px" }}>
-          <h3 style={{ fontFamily:"var(--font-display)", fontSize:"16px", color:"var(--gold)", margin:"0 0 20px" }}>
-            {editItem ? "Edit Practice Area" : "Add New Practice Area"}
-          </h3>
-          <form onSubmit={handleSave}>
-            <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"16px", marginBottom:"16px" }}>
-              <div><label style={labelStyle}>Number</label><input style={inputStyle} value={form.num} onChange={e => setForm(p => ({...p, num:e.target.value}))} placeholder="01" /></div>
-              <div><label style={labelStyle}>Practice Area Name *</label><input style={inputStyle} value={form.name} onChange={e => setForm(p => ({...p, name:e.target.value}))} placeholder="Corporate Law" required /></div>
-            </div>
-            <div style={{ marginBottom:"16px" }}>
-              <label style={labelStyle}>Description *</label>
-              <textarea style={textareaStyle} value={form.desc} onChange={e => setForm(p => ({...p, desc:e.target.value}))} placeholder="Full-spectrum corporate legal services..." required />
-            </div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"20px" }}>
-              <div><label style={labelStyle}>Display Order</label><input style={inputStyle} type="number" value={form.order} onChange={e => setForm(p => ({...p, order:Number(e.target.value)}))} /></div>
-              <div style={{ display:"flex", alignItems:"flex-end", paddingBottom:"2px" }}>
-                <label style={{ display:"flex", alignItems:"center", gap:"8px", cursor:"pointer", fontSize:"12px", color:"var(--text-muted)" }}>
-                  <input type="checkbox" checked={form.active} onChange={e => setForm(p => ({...p, active:e.target.checked}))} />
-                  Show on website
-                </label>
-              </div>
-            </div>
-            {msg && <div style={{ marginBottom:"12px", fontSize:"13px", color: msg.startsWith("✓") ? "var(--gold)" : "#ff6b6b" }}>{msg}</div>}
-            <div style={{ display:"flex", gap:"12px" }}>
-              <button type="submit" style={btnPrimary} disabled={saving}>{saving ? "Saving..." : editItem ? "Update Area" : "Add Area"}</button>
-              <button type="button" style={btnOutline} onClick={() => setShowForm(false)}>Cancel</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {loading ? (
-        <div style={{ textAlign:"center", padding:"40px", color:"var(--text-muted)", fontSize:"13px" }}>Loading...</div>
-      ) : areas.length === 0 ? (
-        <div style={{ ...cardStyle, textAlign:"center", padding:"48px" }}>
-          <div style={{ display:"flex", justifyContent:"center", marginBottom:"12px" }}>
-            <ScaleIcon size={40} color="rgba(201,168,76,0.4)" />
-          </div>
-          <div style={{ fontSize:"14px", color:"var(--text-muted)" }}>No practice areas yet. Click "Add Practice Area" to get started.</div>
-        </div>
-      ) : (
-        areas.map((a, i) => (
-          <div key={a._id} style={{ ...cardStyle, display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:"16px" }}>
-            <div style={{ display:"flex", gap:"16px", flex:1 }}>
-              <div style={{ fontFamily:"var(--font-display)", fontSize:"28px", color:"rgba(201,168,76,0.2)", fontWeight:"700", flexShrink:0, lineHeight:1, paddingTop:"2px" }}>
-                {a.num || String(i+1).padStart(2,"0")}
-              </div>
-              <div>
-                <div style={{ fontFamily:"var(--font-display)", fontSize:"16px", color:"var(--white)", fontWeight:"600", marginBottom:"4px" }}>{a.name}</div>
-                <div style={{ fontSize:"12px", color:"var(--text-muted)", lineHeight:"1.6", maxWidth:"600px" }}>{a.desc}</div>
-              </div>
-            </div>
-            <div style={{ display:"flex", alignItems:"center", gap:"8px", flexShrink:0 }}>
-              {!a.active && <span style={{ fontSize:"10px", color:"var(--text-muted)", border:"1px solid rgba(255,255,255,0.1)", padding:"2px 8px" }}>HIDDEN</span>}
-              <button style={btnOutline} onClick={() => openEdit(a)}>Edit</button>
-              <button style={btnDanger} onClick={() => handleDelete(a._id, a.name)}>Delete</button>
-            </div>
-          </div>
-        ))
-      )}
-    </div>
+    </section>
   );
 }

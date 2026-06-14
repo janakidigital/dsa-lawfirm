@@ -1,0 +1,89 @@
+@startuml DSA-Lawfirm
+
+' Frontend Components
+class Navbar {
+  +render()
+}
+
+class Hero {
+  +render()
+}
+
+class Footer {
+  +render()
+}
+
+class About {
+  +render()
+}
+
+class Attorneys {
+  +render()
+}
+
+class Contact {
+  +render()
+}
+
+class PracticeArea {
+  +render()
+}
+
+class Testimonials {
+  +render()
+}
+
+class Ticker {
+  +render()
+}
+
+class WhyUs {
+  +render()
+}
+
+' Admin Components
+class AttorneysTab {
+  +render()
+}
+
+class PracticeAreasTab {
+  +render()
+}
+
+' Pages
+class AdminDashboard {
+  +render()
+}
+
+class AdminLogin {
+  +login()
+  +render()
+}
+
+' Backend
+class Server {
+  +port: Number
+  +start()
+  +setupRoutes()
+}
+
+' Relationships
+AdminDashboard --> AttorneysTab : contains
+AdminDashboard --> PracticeAreasTab : contains
+AdminLogin --> AdminDashboard : redirects to
+
+Navbar --> Hero : layout
+Navbar --> Footer : layout
+
+Hero --> About : section
+About --> Attorneys : section
+Attorneys --> PracticeArea : section
+PracticeArea --> Testimonials : section
+Testimonials --> WhyUs : section
+WhyUs --> Contact : section
+Contact --> Footer : section
+
+AdminDashboard --> Server : API calls
+Contact --> Server : submits to
+
+@enduml
