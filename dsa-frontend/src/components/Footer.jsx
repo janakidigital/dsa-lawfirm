@@ -105,7 +105,10 @@ export default function Footer() {
           <span>Janaki Digital Solutions Pvt. Ltd.</span>
         </div>
         <div className="footer-copy">
-          Privacy Policy · Terms of Service · Disclaimer
+          Privacy Policy · Terms of Service · Disclaimer ·{" "}
+          <a href="/admin" style={{ opacity: 0.4, fontSize: "11px", color: "inherit", textDecoration: "none" }}>
+             Admin
+          </a>
         </div>
       </div>
     </footer>

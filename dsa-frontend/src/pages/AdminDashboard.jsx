@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/logo.png";
+import logo from "../assets/logo.png";
 import AttorneysTab from "../components/admin/AttorneysTab";
 import PracticeAreasTab from "../components/admin/PracticeAreasTab";
 

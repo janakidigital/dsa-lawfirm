@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -11,9 +12,12 @@ import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+
 import useScrollReveal from "./hooks/useScrollReveal";
 import useCounter from "./hooks/useCounter";
-
+import { LogoProvider } from "./LogoContext";
 import "./styles/global.css";
 
 // ── Custom Cursor ─────────────────────────────────────────────────────────────
@@ -22,51 +26,25 @@ function useCursor() {
     const cursor = document.getElementById("cursor");
     const ring = document.getElementById("cursorRing");
     if (!cursor || !ring) return;
-
-    let mouseX = 0,
-      mouseY = 0,
-      ringX = 0,
-      ringY = 0;
-
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
     const onMove = (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursor.style.left = mouseX + "px";
-      cursor.style.top = mouseY + "px";
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX + "px"; cursor.style.top = mouseY + "px";
     };
     document.addEventListener("mousemove", onMove);
-
     let rafId;
     const animateRing = () => {
       ringX += (mouseX - ringX) * 0.12;
       ringY += (mouseY - ringY) * 0.12;
-      ring.style.left = ringX + "px";
-      ring.style.top = ringY + "px";
+      ring.style.left = ringX + "px"; ring.style.top = ringY + "px";
       rafId = requestAnimationFrame(animateRing);
     };
     animateRing();
-
-    const expand = () => {
-      cursor.classList.add("expanded");
-      ring.classList.add("expanded");
-    };
-    const shrink = () => {
-      cursor.classList.remove("expanded");
-      ring.classList.remove("expanded");
-    };
-
-    const targets = document.querySelectorAll(
-      "a, button, .practice-card, .attorney-card"
-    );
-    targets.forEach((el) => {
-      el.addEventListener("mouseenter", expand);
-      el.addEventListener("mouseleave", shrink);
-    });
-
-    return () => {
-      document.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(rafId);
-    };
+    const expand = () => { cursor.classList.add("expanded"); ring.classList.add("expanded"); };
+    const shrink = () => { cursor.classList.remove("expanded"); ring.classList.remove("expanded"); };
+    const targets = document.querySelectorAll("a, button, .practice-card, .attorney-card");
+    targets.forEach(el => { el.addEventListener("mouseenter", expand); el.addEventListener("mouseleave", shrink); });
+    return () => { document.removeEventListener("mousemove", onMove); cancelAnimationFrame(rafId); };
   }, []);
 }
 
@@ -76,7 +54,6 @@ function Preloader({ onDone }) {
     const timer = setTimeout(onDone, 2000);
     return () => clearTimeout(timer);
   }, [onDone]);
-
   return (
     <div id="preloader">
       <img src="/logo.png" alt="DSA" className="preloader-logo" />
@@ -85,25 +62,17 @@ function Preloader({ onDone }) {
   );
 }
 
-// ── App ───────────────────────────────────────────────────────────────────────
-export default function App() {
+// ── Main Website ──────────────────────────────────────────────────────────────
+function MainSite() {
   const [loading, setLoading] = useState(true);
-
-  // Activate scroll-reveal and counter animations
   useScrollReveal();
   useCounter();
   useCursor();
-
   return (
     <>
-      {/* Custom cursor elements */}
       <div className="cursor" id="cursor" />
       <div className="cursor-ring" id="cursorRing" />
-
-      {/* Preloader */}
       {loading && <Preloader onDone={() => setLoading(false)} />}
-
-      {/* Main site */}
       <Navbar />
       <Hero />
       <Ticker />
@@ -115,5 +84,28 @@ export default function App() {
       <Contact />
       <Footer />
     </>
+  );
+}
+
+// ── Protected Route ───────────────────────────────────────────────────────────
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("dsa_admin_token");
+  return token ? children : <Navigate to="/admin" replace />;
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
+export default function App() {
+  return (
+    <LogoProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainSite />} />
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </LogoProvider>
   );
 }
