@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const token = () => localStorage.getItem("dsa_admin_token");
+
 const EMPTY = { name: "", role: "", spec: "", order: 0, active: true };
 const cardStyle = { background:"rgba(27,58,107,0.08)", border:"1px solid rgba(201,168,76,0.12)", padding:"24px", marginBottom:"12px" };
 const inputStyle = { background:"rgba(255,255,255,0.03)", border:"1px solid rgba(201,168,76,0.2)", color:"var(--cream)", padding:"10px 14px", fontFamily:"var(--font-ui)", fontSize:"13px", outline:"none", width:"100%", boxSizing:"border-box" };
@@ -43,7 +44,7 @@ export default function AttorneysTab() {
     setForm({ name:item.name, role:item.role, spec:item.spec, order:item.order, active:item.active });
     setEditItem(item._id);
     setImageFile(null);
-    setImagePreview(item.image ? `${API_URL}${item.image}` : "");
+    setImagePreview(item.image || "");
     setShowForm(true); setMsg("");
   };
 
@@ -57,7 +58,9 @@ export default function AttorneysTab() {
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-    const url = editItem ? `${API_URL}/api/admin/attorneys/${editItem}` : `${API_URL}/api/admin/attorneys`;
+    const url = editItem
+      ? `${API_URL}/api/admin/attorneys/${editItem}`
+      : `${API_URL}/api/admin/attorneys`;
     const method = editItem ? "PUT" : "POST";
 
     const formData = new FormData();
@@ -75,13 +78,19 @@ export default function AttorneysTab() {
     });
     const data = await res.json();
     setSaving(false);
-    if (res.ok) { setMsg("✓ Saved!"); fetchAll(); setTimeout(() => { setShowForm(false); setMsg(""); }, 1200); }
-    else setMsg("⚠️ " + data.message);
+    if (res.ok) {
+      setMsg("✓ Saved!");
+      fetchAll();
+      setTimeout(() => { setShowForm(false); setMsg(""); }, 1200);
+    } else setMsg("⚠️ " + data.message);
   };
 
   const handleDelete = async (id, name) => {
     if (!window.confirm(`Delete "${name}"?`)) return;
-    await fetch(`${API_URL}/api/admin/attorneys/${id}`, { method:"DELETE", headers:{ Authorization:`Bearer ${token()}` } });
+    await fetch(`${API_URL}/api/admin/attorneys/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token()}` }
+    });
     fetchAll();
   };
 
@@ -103,35 +112,46 @@ export default function AttorneysTab() {
           <form onSubmit={handleSave}>
 
             {/* Image Upload */}
-            <div style={{ marginBottom:"16px" }}>
+            <div style={{ marginBottom:"20px" }}>
               <label style={labelStyle}>Attorney Photo</label>
-              <div style={{ display:"flex", alignItems:"center", gap:"16px" }}>
-                <div style={{ width:"80px", height:"80px", borderRadius:"50%", background:"rgba(201,168,76,0.1)", border:"1px solid rgba(201,168,76,0.2)", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:"20px" }}>
+                <div style={{ width:"90px", height:"90px", borderRadius:"50%", background:"rgba(201,168,76,0.1)", border:"2px solid rgba(201,168,76,0.2)", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                   {imagePreview
                     ? <img src={imagePreview} alt="preview" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-                    : <span style={{ fontSize:"28px" }}>👨‍⚖️</span>
+                    : <span style={{ fontSize:"32px" }}>👨‍⚖️</span>
                   }
                 </div>
                 <div>
-                  <input type="file" accept="image/*" onChange={handleImageChange} id="imgUpload" style={{ display:"none" }} />
+                  <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleImageChange} id="imgUpload" style={{ display:"none" }} />
                   <label htmlFor="imgUpload" style={{ ...btnOutline, cursor:"pointer", display:"inline-block" }}>
                     {imagePreview ? "Change Photo" : "Upload Photo"}
                   </label>
-                  <div style={{ fontSize:"11px", color:"var(--text-muted)", marginTop:"6px" }}>JPG, PNG or WebP · Max 5MB</div>
+                  <div style={{ fontSize:"11px", color:"var(--text-muted)", marginTop:"8px" }}>JPG, PNG or WebP · Max 5MB</div>
                 </div>
               </div>
             </div>
 
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"16px" }}>
-              <div><label style={labelStyle}>Full Name *</label><input style={inputStyle} value={form.name} onChange={e => setForm(p => ({...p, name:e.target.value}))} placeholder="Rajesh Sharma" required /></div>
-              <div><label style={labelStyle}>Role / Title *</label><input style={inputStyle} value={form.role} onChange={e => setForm(p => ({...p, role:e.target.value}))} placeholder="Senior Partner" required /></div>
+              <div>
+                <label style={labelStyle}>Full Name *</label>
+                <input style={inputStyle} value={form.name} onChange={e => setForm(p => ({...p, name:e.target.value}))} placeholder="Rajesh Sharma" required />
+              </div>
+              <div>
+                <label style={labelStyle}>Role / Title *</label>
+                <input style={inputStyle} value={form.role} onChange={e => setForm(p => ({...p, role:e.target.value}))} placeholder="Senior Partner" required />
+              </div>
             </div>
+
             <div style={{ marginBottom:"16px" }}>
               <label style={labelStyle}>Specialization *</label>
               <input style={inputStyle} value={form.spec} onChange={e => setForm(p => ({...p, spec:e.target.value}))} placeholder="Corporate Law · M&A · 20 Years" required />
             </div>
+
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"20px" }}>
-              <div><label style={labelStyle}>Display Order</label><input style={inputStyle} type="number" value={form.order} onChange={e => setForm(p => ({...p, order:Number(e.target.value)}))} /></div>
+              <div>
+                <label style={labelStyle}>Display Order</label>
+                <input style={inputStyle} type="number" value={form.order} onChange={e => setForm(p => ({...p, order:Number(e.target.value)}))} />
+              </div>
               <div style={{ display:"flex", alignItems:"flex-end", paddingBottom:"2px" }}>
                 <label style={{ display:"flex", alignItems:"center", gap:"8px", cursor:"pointer", fontSize:"12px", color:"var(--text-muted)" }}>
                   <input type="checkbox" checked={form.active} onChange={e => setForm(p => ({...p, active:e.target.checked}))} />
@@ -139,6 +159,7 @@ export default function AttorneysTab() {
                 </label>
               </div>
             </div>
+
             {msg && <div style={{ marginBottom:"12px", fontSize:"13px", color: msg.startsWith("✓") ? "var(--gold)" : "#ff6b6b" }}>{msg}</div>}
             <div style={{ display:"flex", gap:"12px" }}>
               <button type="submit" style={btnPrimary} disabled={saving}>{saving ? "Saving..." : editItem ? "Update Attorney" : "Add Attorney"}</button>
@@ -159,10 +180,10 @@ export default function AttorneysTab() {
         attorneys.map(a => (
           <div key={a._id} style={{ ...cardStyle, display:"flex", alignItems:"center", justifyContent:"space-between", gap:"16px" }}>
             <div style={{ display:"flex", alignItems:"center", gap:"16px", flex:1 }}>
-              <div style={{ width:"52px", height:"52px", borderRadius:"50%", overflow:"hidden", border:"1px solid rgba(201,168,76,0.2)", flexShrink:0, background:"rgba(201,168,76,0.1)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <div style={{ width:"56px", height:"56px", borderRadius:"50%", overflow:"hidden", border:"1px solid rgba(201,168,76,0.2)", flexShrink:0, background:"rgba(201,168,76,0.1)", display:"flex", alignItems:"center", justifyContent:"center" }}>
                 {a.image
-                  ? <img src={`${API_URL}${a.image}`} alt={a.name} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-                  : <span style={{ fontSize:"22px" }}>👨‍⚖️</span>
+                  ? <img src={a.image} alt={a.name} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+                  : <span style={{ fontSize:"24px" }}>👨‍⚖️</span>
                 }
               </div>
               <div>
